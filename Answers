@@ -1,0 +1,92 @@
+select b.Genre as gen,
+sum(o.Quantity)
+from `PROJECTBOOK.orders` as o join `PROJECTBOOK.books` as b
+on o.Book_ID = b.Book_ID
+group by gen;
+
+
+Select 
+avg(Price)
+from `PROJECTBOOK.books`
+where Genre="Fantasy";
+
+
+
+select Name, o.Customer_ID,
+count(o.Customer_ID) as total
+from `PROJECTBOOK.customers` as  c join `PROJECTBOOK.orders` as  o on
+c.Customer_ID = o.Customer_ID
+group by Name, o.Customer_ID
+having total>1;
+
+
+
+
+select 
+count(o.Order_ID), o.Book_ID
+from `PROJECTBOOK.orders` as o
+group by o.Book_ID;
+
+
+select b.Book_ID as bookid,b.Title as bname,b.Price as cost
+
+from `PROJECTBOOK.books` as b
+where b.Genre="Fantasy"
+order by cost desc limit 3;
+
+
+
+select b.Book_ID as bookid,b.Title as bname,b.Price as cost,
+RANK() over(order by b.Price desc) as rankof
+from `PROJECTBOOK.books` as b
+where b.Genre="Fantasy"
+QUALIFY rankof < 4;
+
+
+SELECT b.Author,
+sum(o.Quantity)as quan
+from `PROJECTBOOK.orders` as o join `PROJECTBOOK.books` as b on
+o.Book_ID=b.Book_ID
+group by b.Author;
+
+
+
+
+select distinct c.City,o.Total_Amount 
+from `PROJECTBOOK.orders` as o join `PROJECTBOOK.customers` as c
+on o.Customer_ID=c.Customer_ID
+where o.Total_Amount >30;
+
+
+
+
+select c.Name,
+sum(o.Total_Amount) as t
+from `PROJECTBOOK.orders` as o join `PROJECTBOOK.customers` as c
+on o.Customer_ID=c.Customer_ID
+group by c.Name
+order by t desc
+limit 1;
+
+
+select b.Book_ID,
+coalesce(sum(o.Quantity),0) as totalsold,
+
+(b.Stock - coalesce( sum(o.Quantity),0)) as lefts
+from `PROJECTBOOK.books` as b left join `PROJECTBOOK.orders` as o on
+b.Book_ID =o.Book_ID
+group by b.Book_ID,b.Stock
+order by b.Book_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
