@@ -1,9 +1,13 @@
+
+# 1 Retrieve the total number of books sold for each genre.
+
 select b.Genre as gen,
 sum(o.Quantity)
 from `PROJECTBOOK.orders` as o join `PROJECTBOOK.books` as b
 on o.Book_ID = b.Book_ID
 group by gen;
 
+# 2 Find the average price of books in the Fantasy game.
 
 Select 
 avg(Price)
@@ -11,6 +15,7 @@ from `PROJECTBOOK.books`
 where Genre="Fantasy";
 
 
+# 3. List the customers who have placed atleast 2 orders.
 
 select Name, o.Customer_ID,
 count(o.Customer_ID) as total
@@ -21,6 +26,7 @@ having total>1;
 
 
 
+# 4. Find the most frequently ordered book.
 
 select 
 count(o.Order_ID), o.Book_ID
@@ -28,13 +34,14 @@ from `PROJECTBOOK.orders` as o
 group by o.Book_ID;
 
 
-select b.Book_ID as bookid,b.Title as bname,b.Price as cost
+# 5.Show the top 3 most expensive books of Fantasy genre
 
+select b.Book_ID as bookid,b.Title as bname,b.Price as cost
 from `PROJECTBOOK.books` as b
 where b.Genre="Fantasy"
 order by cost desc limit 3;
 
-
+# or
 
 select b.Book_ID as bookid,b.Title as bname,b.Price as cost,
 RANK() over(order by b.Price desc) as rankof
@@ -43,6 +50,8 @@ where b.Genre="Fantasy"
 QUALIFY rankof < 4;
 
 
+# 6. Retrieve the total quantity of books sold by each author.
+
 SELECT b.Author,
 sum(o.Quantity)as quan
 from `PROJECTBOOK.orders` as o join `PROJECTBOOK.books` as b on
@@ -50,7 +59,7 @@ o.Book_ID=b.Book_ID
 group by b.Author;
 
 
-
+# 7. List the cities where customer who spent over 30$ live
 
 select distinct c.City,o.Total_Amount 
 from `PROJECTBOOK.orders` as o join `PROJECTBOOK.customers` as c
@@ -58,7 +67,7 @@ on o.Customer_ID=c.Customer_ID
 where o.Total_Amount >30;
 
 
-
+# 8 Find the customers who spent most on orders.
 
 select c.Name,
 sum(o.Total_Amount) as t
@@ -69,9 +78,11 @@ order by t desc
 limit 1;
 
 
+# 9 Calculate the stock remaining after fulfilling all orders
+
+
 select b.Book_ID,
 coalesce(sum(o.Quantity),0) as totalsold,
-
 (b.Stock - coalesce( sum(o.Quantity),0)) as lefts
 from `PROJECTBOOK.books` as b left join `PROJECTBOOK.orders` as o on
 b.Book_ID =o.Book_ID
